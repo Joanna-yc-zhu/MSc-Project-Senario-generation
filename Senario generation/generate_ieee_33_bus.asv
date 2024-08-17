@@ -1,0 +1,93 @@
+function ieee_33 = generate_ieee_33_bus(node_1_location,node_18_lat,node_19_lon, node_23_lon, node_26_lon)
+%%This generate IEEE 33 bus map
+%   it generate the location of the node x in (lat,lon) as the x+1 row of
+%   ieee_33
+%read ieee_33 data
+% Read the matrix from a specific sheet and range
+fileName = "C:\Users\HP\OneDrive - Imperial College London\Planning for Extreme Weather event\Senario generation\Radial distribution systems reconfiguration considering power losses cost and damage cost due to power supply interruption of consumers-17.xlsx";
+section_length = readmatrix(fileName, 'Sheet', 3, 'Range', 'F3:F39');
+
+%initialise and take the location of the substation
+lat1 = node_1_location(1);
+lon1 = node_1_location(2);
+ieee_33 = zeros(33,2);
+ieee_33(1,:) = node_1_location;
+
+%place substation, node 1 to node 18
+for i = 1:17
+    latIn = ieee_33(i,1);
+    lonIn = ieee_33(i,2);
+    dist = section_length(i); %meters
+    distUnits = 'm';
+    % Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+    arclen = rad2deg(dist/earthRadius(distUnits)); 
+    az = 180;   %south
+    [latOut,lonOut] = reckon(latIn, lonIn,arclen,az);
+    ieee_33(i+1,1) = latOut;
+    ieee_33(i+1,2) = lonOut;
+end
+
+%place node 19 to 22
+dist = section_length(18); %meters
+distUnits = 'm';
+% Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+arclen = rad2deg(dist/earthRadius(distUnits)); 
+az = 270;    %west
+[ieee_33(19,1),ieee_33(19,2)] = reckon(ieee_33(2,1),ieee_33(2,2), arclen,az);
+for i = 19:21
+    latIn = ieee_33(i,1);
+    lonIn = ieee_33(i,2);
+    dist = section_length(i); %meters
+    distUnits = 'm';
+    % Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+    arclen = rad2deg(dist/earthRadius(distUnits)); 
+    az = 180;   %south
+    [latOut,lonOut] = reckon(latIn, lonIn,arclen,az);
+    ieee_33(i+1,1) = latOut;
+    ieee_33(i+1,2) = lonOut;
+end
+
+%place node 23 - 25
+dist = section_length(22); %meters
+distUnits = 'm';
+% Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+arclen = rad2deg(dist/earthRadius(distUnits)); 
+az = 90;    %east
+[ieee_33(23,1),ieee_33(23,2)] = reckon(ieee_33(3,1),ieee_33(3,2), arclen,az);
+for i = 23:25
+    latIn = ieee_33(i,1);
+    lonIn = ieee_33(i,2);
+    dist = section_length(i); %meters
+    distUnits = 'm';
+    % Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+    arclen = rad2deg(dist/earthRadius(distUnits)); 
+    az = 180;   %south
+    [latOut,lonOut] = reckon(latIn, lonIn,arclen,az);
+    ieee_33(i+1,1) = latOut;
+    ieee_33(i+1,2) = lonOut;
+end
+
+%place node 26-33
+dist = section_length(25); %meters
+distUnits = 'm';
+% Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+arclen = rad2deg(dist/earthRadius(distUnits)); 
+az = 90;    %east
+[ieee_33(23,1),ieee_33(23,2)] = reckon(ieee_33(3,1),ieee_33(3,2), arclen,az);
+for i = 23:25
+    latIn = ieee_33(i,1);
+    lonIn = ieee_33(i,2);
+    dist = section_length(i); %meters
+    distUnits = 'm';
+    % Convert input distance to earth degrees (Lat, Lon are typicaly given in degrees)
+    arclen = rad2deg(dist/earthRadius(distUnits)); 
+    az = 180;   %south
+    [latOut,lonOut] = reckon(latIn, lonIn,arclen,az);
+    ieee_33(i+1,1) = latOut;
+    ieee_33(i+1,2) = lonOut;
+end
+lat_IV = lat_I(8:15);
+lon_IV = node_26_lon *ones(8,1);
+ieee_33(27:34,:) = [lat_IV,lon_IV];
+
+end
